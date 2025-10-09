@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inciar_sesion">Inciar Sesion</string>
+    <string name="iniciar_sesion">Iniciar Sesion</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="nombre_completo">Nombre Completo</string>
+    <string name="contase_a">Contaseña</string>
+    <string name="crear">Crear</string>
+    <string name="boton_atras">boton atras</string>
+</resources>

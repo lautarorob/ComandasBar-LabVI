@@ -8,18 +8,20 @@ import androidx.room.Query;
 import androidx.room.Update;
 import java.util.List;
 
+import database.CamareroEntity;
+
 @Dao
 public interface CamareroDao {
     @Insert
-    long insert(CamareroDao camarero);
+    long insert(CamareroEntity camarero);
 
     @Update
-    int update(CamareroDao camarero);
+    int update(CamareroEntity camarero);
 
     @Delete
-    void delete(CamareroDao camarero);
+    void delete(CamareroEntity camarero);
 
-    @Query("SELECT * FROM camarero")
-    LiveData<List<CamareroDao>> getAllCamareros();
+    @Query("SELECT * FROM camarero WHERE email = :email LIMIT 1")
+    CamareroEntity findByEmail(String email);
 
 }

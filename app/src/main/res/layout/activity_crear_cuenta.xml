@@ -8,6 +8,7 @@
     tools:context=".CrearCuentaActivity"
     android:background="@color/design_default_color_background">
 
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -17,12 +18,26 @@
         android:text="@string/crear_cuenta"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/ETnombre"
+        app:layout_constraintBottom_toTopOf="@+id/imagenPerfil"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.382"
+        app:layout_constraintHorizontal_bias="0.359"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.666" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imagenPerfil"
+        android:layout_width="80dp"    android:layout_height="80dp"
+        android:background="@color/material_dynamic_neutral_variant90"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_camera"
+        android:layout_marginBottom="20dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/ETnombre"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
         android:id="@+id/ETnombre"
@@ -53,7 +68,7 @@
         android:background="@drawable/edittext_rounded"
         android:ems="10"
         android:hint="Contacto"
-        android:inputType="textPassword"
+        android:inputType="phone"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/ETcontrasena"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,11 +98,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="332dp"
+        android:layout_marginBottom="216dp"
         android:text="@string/crear"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText

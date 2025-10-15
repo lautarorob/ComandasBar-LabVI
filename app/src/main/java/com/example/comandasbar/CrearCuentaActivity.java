@@ -1,10 +1,13 @@
 package com.example.comandasbar;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;import android.os.Bundle;
+import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -87,11 +90,25 @@ public class CrearCuentaActivity extends AppCompatActivity {
             guardarDatosDelCamarero();
         });
 
+        arrowBackListener();
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+    }
+
+    private void arrowBackListener() {
+        ImageButton arrowBack = findViewById(R.id.arrowBack);
+        arrowBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CrearCuentaActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
     }
 
@@ -114,6 +131,17 @@ public class CrearCuentaActivity extends AppCompatActivity {
             Toast.makeText(this, "Por favor, toma una foto de perfil", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Por favor, introduce un formato de email válido", Toast.LENGTH_SHORT).show();
+            emailEditText.setError("Formato de email inválido"); // Opcional: marca el campo con el error
+            return;
+        }
+        if (contacto.length() < 9 || contacto.length() > 11 ){
+            Toast.makeText(this, "El contacto debe tener entre 9 y 11 caracteres", Toast.LENGTH_SHORT).show();
+            contactoEditText.setError("Formato(codigo de area)(1234567)");
+            return;
+        }
+
 
         // Procesa la imagen a byte[]
         byte[] imagenEnBytes;
@@ -140,7 +168,7 @@ public class CrearCuentaActivity extends AppCompatActivity {
             camareroDao.insert(camarero);
             runOnUiThread(() -> {
                 Toast.makeText(this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
-
+                finish();
             });
         }).start();
     }

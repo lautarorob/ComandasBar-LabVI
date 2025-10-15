@@ -77,12 +77,9 @@ public class LoginActivity extends AppCompatActivity {
                     if (resultado.verified) {
                         // ¡Contraseña correcta! Login exitoso.
                         Toast.makeText(LoginActivity.this, "¡Bienvenido, " + camarero.getNombreCompleto() + "!", Toast.LENGTH_LONG).show();
-
-                        // Aquí navegarías a la siguiente actividad (ej. la pantalla principal de la app)
-                        // Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        // intent.putExtra("CAMARERO_ID", camarero.getId()); // Opcional: pasar el ID del camarero
-                        // startActivity(intent);
-                        // finish(); // Cierra LoginActivity para que el usuario no pueda volver con el botón "atrás"
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish(); // Cierra la actividad de login
                     } else {
                         // Contraseña incorrecta
                         Toast.makeText(LoginActivity.this, "Contraseña incorrecta", Toast.LENGTH_LONG).show();

@@ -20,10 +20,7 @@
         <activity
             android:name=".PedidoActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ComandasBar" /> <!-- ACTIVITY DE CREAR CUENTA (sin launcher) -->
+
         <activity
             android:name=".CrearCuentaActivity"
             android:exported="false" /> <!-- ACTIVITY DE LOGIN - ESTA ES LA PANTALLA DE INICIO -->
@@ -40,13 +37,7 @@
         <activity
             android:name=".GestionMesasActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".NuevoPedidoActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

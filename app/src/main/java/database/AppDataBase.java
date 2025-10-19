@@ -8,22 +8,17 @@ import androidx.room.TypeConverters;
 
 import dao.CamareroDao;
 import dao.MesaDao;
+import dao.PedidoDao;
 
-import database.CamareroEntity;
-import database.MesaEntity;
-
-
-// Lista  entidades
-@Database(entities = {MesaEntity.class, CamareroEntity.class}, version = 2)
-
+// Lista de entidades - AGREGUÉ PedidoEntity.class
+@Database(entities = {MesaEntity.class, CamareroEntity.class, PedidoEntity.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDataBase extends RoomDatabase {
 
-
     public abstract MesaDao mesaDao();
     public abstract CamareroDao camareroDao();
+    public abstract PedidoDao pedidoDao();
 
-    // El resto del código del Singleton se queda igual...
     private static volatile AppDataBase INSTANCE;
 
     public static AppDataBase getInstance(final Context context) {

@@ -7,6 +7,7 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -17,27 +18,27 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ComandasBar">
+
         <activity
             android:name=".PedidoActivity"
             android:exported="false" />
 
         <activity
             android:name=".CrearCuentaActivity"
-            android:exported="false" /> <!-- ACTIVITY DE LOGIN - ESTA ES LA PANTALLA DE INICIO -->
+            android:exported="false" />
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- MAIN ACTIVITY (sin launcher - se abre después del login) -->
-        <!-- PROVIDER PARA LA CÁMARA -->
+        </activity>
+
         <activity
             android:name=".GestionMesasActivity"
-            android:exported="true">
-        </activity>
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

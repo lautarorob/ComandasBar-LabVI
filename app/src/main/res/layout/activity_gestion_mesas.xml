@@ -6,18 +6,15 @@
     android:padding="16dp"
     android:background="#ECECEC">
 
-    <!-- Nombre camarero -->
     <TextView
         android:id="@+id/txtNombreCamarero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/camarero"
+        android:text="Camarero"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"/>
-
-    <!-- Foto camarero -->
 
     <ImageView
         android:id="@+id/imgFotoCamarero"
@@ -27,16 +24,38 @@
         android:scaleType="centerCrop"
         android:layout_gravity="center"/>
 
-    <!-- Botón cerrar sesión -->
     <Button
         android:id="@+id/btnCerrarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cerrar_sesi_n"
+        android:text="Cerrar Sesión"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Mapa de mesas -->
+    <!-- Sección de Pedidos en Preparación -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pedidos en Preparación"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/layoutPedidos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mesas"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
     <GridLayout
         android:id="@+id/gridMesas"
         android:layout_width="match_parent"

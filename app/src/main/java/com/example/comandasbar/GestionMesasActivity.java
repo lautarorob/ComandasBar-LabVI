@@ -8,6 +8,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -16,35 +20,41 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Locale;
 
 import dao.MesaDao;
+import dao.PedidoDao;
 import database.AppDataBase;
 import database.CamareroEntity;
 import database.MesaEntity;
+import database.PedidoEntity;
 
 public class GestionMesasActivity extends AppCompatActivity {
 
     private GridLayout gridMesas;
+    private LinearLayout layoutPedidos;
     private MesaDao mesaDao;
+    private PedidoDao pedidoDao;
     private long idCamareroActual;
     private TextView txtNombreCamarero;
     private ImageView imgFotoCamarero;
     private Button btnCerrarSesion;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestion_mesas);
 
-        // Vistas
         txtNombreCamarero = findViewById(R.id.txtNombreCamarero);
         imgFotoCamarero = findViewById(R.id.imgFotoCamarero);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
         gridMesas = findViewById(R.id.gridMesas);
+        layoutPedidos = findViewById(R.id.layoutPedidos);
 
         mesaDao = AppDataBase.getInstance(getApplicationContext()).mesaDao();
+        pedidoDao = AppDataBase.getInstance(getApplicationContext()).pedidoDao();
 
-        // Recuperar id camarero
         SharedPreferences prefs = getSharedPreferences("SesionCamarero", MODE_PRIVATE);
         idCamareroActual = prefs.getLong("idCamarero", -1);
         if (idCamareroActual == -1) {
@@ -53,10 +63,8 @@ public class GestionMesasActivity extends AppCompatActivity {
             return;
         }
 
-        // Mostrar nombre y foto del camarero
         mostrarCamarero();
 
-        // Cerrar sesión
         btnCerrarSesion.setOnClickListener(v -> {
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
@@ -67,6 +75,77 @@ public class GestionMesasActivity extends AppCompatActivity {
         });
 
         inicializarMesas();
+        cargarPedidos();
+        iniciarActualizacionCronometros();
+    }
+
+    private void iniciarActualizacionCronometros() {
+        handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                actualizarCronometros();
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
+    }
+
+    private void actualizarCronometros() {
+        pedidoDao.getAllPedidos().observe(this, pedidos -> {
+            if (pedidos != null) {
+                mostrarPedidos(pedidos);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacks(null);
+        }
+    }
+
+    private void cargarPedidos() {
+        pedidoDao.getAllPedidos().observe(this, this::mostrarPedidos);
+    }
+
+    private void mostrarPedidos(List<PedidoEntity> pedidos) {
+        layoutPedidos.removeAllViews();
+
+        for (PedidoEntity pedido : pedidos) {
+            View itemView = LayoutInflater.from(this).inflate(R.layout.item_pedido, layoutPedidos, false);
+
+            TextView txtMesa = itemView.findViewById(R.id.txt_pedido_mesa);
+            TextView txtDetalle = itemView.findViewById(R.id.txt_pedido_detalle);
+            TextView txtTotal = itemView.findViewById(R.id.txt_pedido_total);
+            TextView txtCronometro = itemView.findViewById(R.id.txt_cronometro);
+            Button btnEntregar = itemView.findViewById(R.id.btn_entregar);
+
+            txtMesa.setText("Mesa " + pedido.getNumeroMesa());
+            txtDetalle.setText(pedido.getDetalle());
+            txtTotal.setText(String.format(Locale.getDefault(), "Total: $%.2f", pedido.getTotal()));
+
+            int segundosRestantes = pedido.getSegundosRestantes();
+            int minutos = segundosRestantes / 60;
+            int segundos = segundosRestantes % 60;
+            txtCronometro.setText(String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos));
+
+            if (pedido.estaListo()) {
+                txtCronometro.setTextColor(ContextCompat.getColor(this, R.color.green));
+                txtCronometro.setText("¡LISTO!");
+                Toast.makeText(this, "¡Pedido Mesa " + pedido.getNumeroMesa() + " listo!", Toast.LENGTH_SHORT).show();
+            }
+
+            btnEntregar.setOnClickListener(v -> {
+                new Thread(() -> {
+                    pedidoDao.eliminarPedido(pedido.getIdPedido());
+                    runOnUiThread(() -> Toast.makeText(this, "Pedido entregado", Toast.LENGTH_SHORT).show());
+                }).start();
+            });
+
+            layoutPedidos.addView(itemView);
+        }
     }
 
     private void mostrarCamarero() {
@@ -84,7 +163,6 @@ public class GestionMesasActivity extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(foto, 0, foto.length);
                         imgFotoCamarero.setImageBitmap(bitmap);
                     } else {
-                        // Aquí usamos el drawable por defecto de Android
                         imgFotoCamarero.setImageResource(android.R.drawable.sym_def_app_icon);
                     }
                 }
@@ -92,11 +170,10 @@ public class GestionMesasActivity extends AppCompatActivity {
         }).start();
     }
 
-
     private void inicializarMesas() {
         new Thread(() -> {
             if (mesaDao.getAllMesasSync().isEmpty()) {
-                for (int i = 1; i <= 6; i++) { // Solo 6 mesas
+                for (int i = 1; i <= 6; i++) {
                     MesaEntity mesa = new MesaEntity(i, MesaEntity.EstadoMesa.LIBRE, -1);
                     mesaDao.insert(mesa);
                 }
@@ -118,7 +195,6 @@ public class GestionMesasActivity extends AppCompatActivity {
             mesaLayout.setPadding(20, 20, 20, 20);
             mesaLayout.setBackgroundResource(R.drawable.bg_mesa);
 
-            // Color según estado
             if (mesa.getEstado() == MesaEntity.EstadoMesa.OCUPADA) {
                 mesaLayout.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
             } else if (mesa.getIdCamarero() != -1) {
@@ -127,7 +203,6 @@ public class GestionMesasActivity extends AppCompatActivity {
                 mesaLayout.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green));
             }
 
-            // Número y estado
             TextView txtNumero = new TextView(this);
             String estadoTexto;
             if (mesa.getIdCamarero() == -1) {
@@ -144,7 +219,6 @@ public class GestionMesasActivity extends AppCompatActivity {
             txtNumero.setPadding(0, 0, 0, 10);
             mesaLayout.addView(txtNumero);
 
-            // Botones dinámicos
             if (mesa.getIdCamarero() == -1) {
                 Button btnAsignar = new Button(this);
                 btnAsignar.setText("Asignarme");

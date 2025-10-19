@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="12dp"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txt_pedido_mesa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mesa 1"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txt_cronometro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:60"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/orange"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_pedido_detalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2x Hamburguesa"
+        android:layout_marginTop="4dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/txt_pedido_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Total: $1500"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_entregar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Entregar"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+</LinearLayout>

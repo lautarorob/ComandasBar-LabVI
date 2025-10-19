@@ -15,9 +15,9 @@ public class MesaEntity {
         OCUPADA
     }
     private EstadoMesa estado;
-    private int idCamarero; // quién la atiende
+    private long idCamarero; // quién la atiende
 
-    public MesaEntity(int numero, EstadoMesa estado, int idCamarero) {
+    public MesaEntity(int numero, EstadoMesa estado, long idCamarero) {
         this.numero = numero;
         this.estado = estado;
         this.idCamarero = idCamarero;
@@ -47,11 +47,11 @@ public class MesaEntity {
         this.estado = estado;
     }
 
-    public int getIdCamarero() {
+    public long getIdCamarero() {
         return idCamarero;
     }
 
-    public void setIdCamarero(int idCamarero) {
+    public void setIdCamarero(long idCamarero) {
         this.idCamarero = idCamarero;
     }
 
@@ -64,6 +64,15 @@ public class MesaEntity {
                 ", idCamarero=" + idCamarero +
                 '}';
     }
+    public boolean isOcupada() {
+        return estado == EstadoMesa.OCUPADA;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.estado = ocupada ? EstadoMesa.OCUPADA : EstadoMesa.LIBRE;
+    }
+
+
 
 
 }

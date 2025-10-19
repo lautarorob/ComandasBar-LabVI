@@ -49,4 +49,5 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
     implementation ("at.favre.lib:bcrypt:0.10.2")
+    implementation("com.google.android.material:material:1.10.0")
 }

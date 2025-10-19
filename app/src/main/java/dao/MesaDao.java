@@ -37,4 +37,7 @@ public interface MesaDao {
     // Obtener una mesa por id
     @Query("SELECT * FROM mesa WHERE idMesa = :id")
     MesaEntity getMesaById(int id);
+    @Query("SELECT * FROM mesa ORDER BY numero ASC")
+    List<MesaEntity> getAllMesasSync();
+
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    tools:context=".CobroFragment"
+    android:background="?android:attr/windowBackground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/proceso_de_cobro"
+        android:layout_marginTop="40dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:id="@+id/txt_cobro_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_a_pagar_0_00"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dividir_la_cuenta"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:id="@+id/edit_numero_personas"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/personas"
+        android:inputType="number"
+        android:gravity="center"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btn_dividir_cuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/calcular_divisi_n"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/txt_resultado_division"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        tools:text="Cada uno paga: $1500.00"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btn_finalizar_cobro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/finalizar_cobro"
+        android:backgroundTint="@color/green"
+        android:padding="12dp"/>
+
+    <Button
+        android:id="@+id/btn_cancelar_cobro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancelar_cobro"
+        android:backgroundTint="@color/red"
+        android:padding="12dp"/>
+
+</LinearLayout>

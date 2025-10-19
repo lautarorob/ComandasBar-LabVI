@@ -4,9 +4,9 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+        android:required="true" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -17,29 +17,37 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ComandasBar">
-
-        <!-- ACTIVITY DE CREAR CUENTA (sin launcher) -->
+        <activity
+            android:name=".PedidoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ComandasBar" /> <!-- ACTIVITY DE CREAR CUENTA (sin launcher) -->
         <activity
             android:name=".CrearCuentaActivity"
-            android:exported="false" />
-
-        <!-- ACTIVITY DE LOGIN - ESTA ES LA PANTALLA DE INICIO -->
+            android:exported="false" /> <!-- ACTIVITY DE LOGIN - ESTA ES LA PANTALLA DE INICIO -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> <!-- MAIN ACTIVITY (sin launcher - se abre después del login) -->
+        <!-- PROVIDER PARA LA CÁMARA -->
+        <activity
+            android:name=".GestionMesasActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NuevoPedidoActivity" />
 
-        <!-- MAIN ACTIVITY (sin launcher - se abre después del login) -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ComandasBar" />
-
-        <!-- PROVIDER PARA LA CÁMARA -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

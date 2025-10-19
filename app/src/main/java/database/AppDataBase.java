@@ -14,7 +14,8 @@ import database.MesaEntity;
 
 
 // Lista  entidades
-@Database(entities = {MesaEntity.class, CamareroEntity.class}, version = 1)
+@Database(entities = {MesaEntity.class, CamareroEntity.class}, version = 2)
+
 @TypeConverters({Converters.class})
 public abstract class AppDataBase extends RoomDatabase {
 

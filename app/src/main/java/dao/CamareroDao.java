@@ -21,6 +21,9 @@ public interface CamareroDao {
     @Delete
     void delete(CamareroEntity camarero);
 
+    @Query("SELECT * FROM camarero WHERE idCamarero = :id LIMIT 1")
+    CamareroEntity findById(long id);
+
     @Query("SELECT * FROM camarero WHERE email = :email LIMIT 1")
     CamareroEntity findByEmail(String email);
 

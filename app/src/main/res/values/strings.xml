@@ -53,4 +53,25 @@
     <string name="contase_a">Contaseña</string>
     <string name="crear">Crear</string>
     <string name="boton_atras">boton atras</string>
+    <string name="camarero">Camarero:</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="mesa_1">Mesa 1</string>
+    <string name="libre">Libre</string>
+    <string name="nuevo_pedido">Nuevo Pedido</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="entradas">Entradas</string>
+    <string name="platos_principales">Platos Principales</string>
+    <string name="comanda_actual">Comanda Actual</string>
+    <string name="total_0_00">Total: $0.00</string>
+    <string name="enviar_comanda">Enviar Comanda</string>
+    <string name="cerrar_y_cobrar">Cerrar y Cobrar</string>
+    <string name="finalizar_cobro">Finalizar Cobro</string>
+    <string name="calcular_divisi_n">Calcular División</string>
+    <string name="personas">Personas</string>
+    <string name="dividir_la_cuenta">Dividir la cuenta:</string>
+    <string name="total_a_pagar_0_00">Total a Pagar: $0.00</string>
+    <string name="proceso_de_cobro">Proceso de Cobro</string>
+    <string name="cancelar_cobro">Cancelar Cobro</string>
+    <string name="bebidas">Bebidas</string>
 </resources>

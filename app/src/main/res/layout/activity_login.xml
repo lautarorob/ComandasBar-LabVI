@@ -7,13 +7,46 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/logocomfacil" />
+
+
+    <TextView
+        android:id="@+id/bienvenidoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginTop="28dp"
+        android:text="Bienvenido,"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+
+    <TextView
+        android:id="@+id/continuarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Registrate para empezar "
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:text="Inicar Sesion"
+        android:layout_marginTop="40dp"
+        android:text="Iniciar Sesion"
         android:textAlignment="center"
-        android:textSize="24sp"
+
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <EditText
@@ -45,10 +78,15 @@
         android:id="@+id/crearCuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:hint="Crear Cuenta"
-        android:clickable="true"
+        android:textAlignment="center"
         android:layout_margin="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:hint="Eres nuevo? Registrate"
+        android:minHeight="48dp"
         android:textSize="18sp" />
 
     <Button

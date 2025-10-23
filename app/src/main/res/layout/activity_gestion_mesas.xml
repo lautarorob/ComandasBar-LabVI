@@ -1,10 +1,17 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#ECECEC">
+    android:background="#ECECEC"
+>
 
     <TextView
         android:id="@+id/txtNombreCamarero"
@@ -65,3 +72,4 @@
         android:alignmentMode="alignMargins"
         android:useDefaultMargins="true"/>
 </LinearLayout>
+</ScrollView>

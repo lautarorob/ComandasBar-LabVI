@@ -1,24 +1,29 @@
 package com.example.comandasbar;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.example.comandasbar.Producto;
-import com.example.comandasbar.R;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import viewModel.MenuViewModel;
 
 public class MenuFragment extends Fragment {
 
-    private List<Producto> listaProductos = new ArrayList<>();
+    private MenuViewModel menuViewModel;
+    private LinearLayout layoutEntradas;
+    private LinearLayout layoutPrincipales;
+    private LinearLayout layoutBebidas;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,45 +35,65 @@ public class MenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Como no quieres BD, creamos los productos aquí
-        cargarProductosDeEjemplo();
+        // Inicializa las vistas
+        layoutEntradas = view.findViewById(R.id.layout_entradas);
+        layoutPrincipales = view.findViewById(R.id.layout_principales);
+        layoutBebidas = view.findViewById(R.id.layout_bebidas);
+        ImageButton arrowBackButton = view.findViewById(R.id.arrowBack); // <-- Inicializa el ImageButton
 
-        LinearLayout layoutEntradas = view.findViewById(R.id.layout_entradas);
-        LinearLayout layoutPrincipales = view.findViewById(R.id.layout_principales);
-        LinearLayout layoutBebidas = view.findViewById(R.id.layout_bebidas);
+        // Obtiene la instancia del ViewModel
+        menuViewModel = new ViewModelProvider(this).get(MenuViewModel.class);
 
+        // Configura el observador. Cuando los datos lleguen, se llamará a mostrarMenu.
+        menuViewModel.getMenuItems().observe(getViewLifecycleOwner(), productos -> {
+            mostrarMenu(productos);
+        });
 
-        // Limpiamos vistas por si acaso
+        // Pide al ViewModel que empiece a cargar los datos.
+        // El observador de arriba se activará cuando la carga termine.
+        menuViewModel.cargarMenu();
+
+        // Listener para el ImageButton de volver atrás
+        if (arrowBackButton != null) {
+            arrowBackButton.setOnClickListener(v -> {
+                // Para volver a GestionMesasActivity desde MenuFragment finaliza PedidoActivity.
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            });
+        }
+    }
+
+    /**
+     * Este metodo se encarga únicamente de la lógica de la UI: dibujar los botones del menú.
+     * @param listaProductos La lista de productos a mostrar.
+     */
+    private void mostrarMenu(List<Producto> listaProductos) {
+        // Limpiamos las vistas para no duplicar botones si este metodo se llamara de nuevo
+        if (layoutEntradas == null || layoutPrincipales == null || layoutBebidas == null) return;
         layoutEntradas.removeAllViews();
         layoutPrincipales.removeAllViews();
         layoutBebidas.removeAllViews();
 
+        // Recorre la lista de productos recibida y crea un botón para cada uno
         for (Producto p : listaProductos) {
             Button btnProducto = new Button(getContext());
             btnProducto.setText(p.getNombre() + " - $" + p.getPrecio());
             btnProducto.setOnClickListener(v -> {
-                // Comunicarse con la Activity para agregar el producto
+                // Se comunica con la Activity para agregar el producto a la comanda actual
                 if (getActivity() instanceof PedidoActivity) {
                     ((PedidoActivity) getActivity()).agregarProductoAComanda(p);
                 }
             });
 
-            if (p.getCategoria().equals("Entradas")) {
+            // Añade el botón a la categoría correcta
+            if ("Entradas".equals(p.getCategoria())) {
                 layoutEntradas.addView(btnProducto);
-            } else if (p.getCategoria().equals("Principales")) {
+            } else if ("Principales".equals(p.getCategoria())) {
                 layoutPrincipales.addView(btnProducto);
-            } else if (p.getCategoria().equals("Bebidas")) {
+            } else if ("Bebidas".equals(p.getCategoria())) {
                 layoutBebidas.addView(btnProducto);
             }
         }
-    }
-
-    private void cargarProductosDeEjemplo() {
-        listaProductos.add(new Producto("Empanada", 150.0, "Entradas"));
-        listaProductos.add(new Producto("Papas Fritas", 700.0, "Entradas"));
-        listaProductos.add(new Producto("Milanesa con Fritas", 1500.0, "Principales"));
-        listaProductos.add(new Producto("Bife de Chorizo", 2200.0, "Principales"));
-        listaProductos.add(new Producto("Coca Cola", 200.0, "Bebidas"));
-        listaProductos.add(new Producto("Pepsi", 300.0, "Bebidas"));
     }
 }

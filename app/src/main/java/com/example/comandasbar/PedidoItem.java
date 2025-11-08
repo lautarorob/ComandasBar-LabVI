@@ -39,6 +39,10 @@ public class PedidoItem implements Serializable {
         this.cantidad++;
     }
 
+    public void decrementarCantidad() {
+        this.cantidad--;
+    }
+
     public double getSubtotal() {
         return this.producto.getPrecio() * this.cantidad;
     }

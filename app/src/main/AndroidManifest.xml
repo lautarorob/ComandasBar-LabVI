@@ -19,22 +19,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ComandasBar">
 
+        <!-- SplashActivity: Nuevo punto de entrada de la aplicación -->
         <activity
-            android:name=".PedidoActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".CrearCuentaActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity
+            android:name=".PedidoActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".CrearCuentaActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false">
+        </activity>
+
 
         <activity
             android:name=".GestionMesasActivity"

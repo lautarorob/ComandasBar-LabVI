@@ -3,24 +3,24 @@ package com.example.comandasbar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText; // Importar EditText
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import at.favre.lib.crypto.bcrypt.BCrypt; // Importante: importar BCrypt
-import database.AppDataBase;
-import database.CamareroEntity;
-import dao.CamareroDao;
+import viewModel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etContrasena;
     private Button btnIniciarSesion;
     private TextView tvCrearCuenta;
+    private LoginViewModel viewModel;
+    private CheckBox cbRecuerdame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +32,19 @@ public class LoginActivity extends AppCompatActivity {
         etContrasena = findViewById(R.id.editTextTextPassword);
         btnIniciarSesion = findViewById(R.id.iniciarSesion);
         tvCrearCuenta = findViewById(R.id.crearCuenta);
+        cbRecuerdame = findViewById(R.id.checkBoxRecuerdame);
+
+        // Obtenemos la instancia del ViewModel
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+        // Configuramos los observadores para reaccionar a los eventos del ViewModel
+        setupObservers();
+
+        // Cargar preferencias guardadas al iniciar
+        cargarPreferencias();
 
         // 2. Configurar el listener para el botón de Iniciar Sesión
         btnIniciarSesion.setOnClickListener(v -> {
-
             realizarLogin();
         });
 
@@ -46,59 +55,79 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void setupObservers() {
+        // Observador para los mensajes de error
+        viewModel.getError().observe(this, mensajeError -> {
+            Toast.makeText(this, mensajeError, Toast.LENGTH_SHORT).show();
+        });
+
+        // Observador para login exitoso
+        viewModel.getLoginExitoso().observe(this, camarero -> {
+            Toast.makeText(this, "Bienvenido, " + camarero.getNombreCompleto() + "!", Toast.LENGTH_SHORT).show();
+
+            // Obtenemos los datos introducidos por el usuario
+            String email = etEmail.getText().toString().trim();
+            String contrasena = etContrasena.getText().toString();
+
+
+            boolean recordarCredenciales = false;
+            if (cbRecuerdame != null) { // Comprobación defensiva
+                recordarCredenciales = cbRecuerdame.isChecked();
+            }
+            guardarSesion(camarero.getIdCamarero(), camarero.getNombreCompleto(), email, contrasena, recordarCredenciales);
+
+            // Navegación a la siguiente actividad
+            Intent intent = new Intent(LoginActivity.this, GestionMesasActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
     private void realizarLogin() {
         String email = etEmail.getText().toString().trim();
         String contrasena = etContrasena.getText().toString();
-
-        // Validaciones de los campos de entrada
-        if (email.isEmpty() || contrasena.isEmpty()) {
-            Toast.makeText(this, "Por favor, introduce el email y la contraseña", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Obtener la instancia de la base de datos y el DAO
-        AppDataBase db = AppDataBase.getInstance(getApplicationContext());
-        CamareroDao camareroDao = db.camareroDao();
-
-        //  Operación de base de datos en un hilo de fondo para no bloquear la UI
-        new Thread(() -> {
-            // Buscamos al camarero por su email
-            CamareroEntity camarero = camareroDao.findByEmail(email);
-
-            // Volvemos al hilo principal para manejar el resultado
-            runOnUiThread(() -> {
-                if (camarero == null) {
-                    // Caso 1: No se encontró ningún usuario con ese email
-                    Toast.makeText(LoginActivity.this, "Email no registrado", Toast.LENGTH_LONG).show();
-                } else {
-                    // Caso 2: Se encontró un usuario. Ahora verificamos la contraseña.
-                    // Usamos BCrypt para comparar la contraseña introducida con el hash guardado.
-                    BCrypt.Result resultado = BCrypt.verifyer().verify(contrasena.toCharArray(), camarero.getContrasena());
-
-                    if (resultado.verified) {
-                        // ¡Contraseña correcta! Login exitoso.
-                        Toast.makeText(LoginActivity.this, "¡Bienvenido, " + camarero.getNombreCompleto() + "!", Toast.LENGTH_LONG).show();
-                        guardarSesion(camarero.getIdCamarero(), camarero.getNombreCompleto());
-
-                        // Aquí navegarías a la siguiente actividad (ej. la pantalla principal de la app)
-                       Intent intent = new Intent(LoginActivity.this,GestionMesasActivity.class);
-
-                       // intent.putExtra("CAMARERO_ID", camarero.getId()); // Opcional: pasar el ID del camarero
-                        startActivity(intent);
-                        // finish(); // Cierra LoginActivity para que el usuario no pueda volver con el botón "atrás"
-                    } else {
-                        // Contraseña incorrecta
-                        Toast.makeText(LoginActivity.this, "Contraseña incorrecta", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }).start();
+        // El ViewModel ya valida que no estén vacíos.
+        viewModel.iniciarSesion(email, contrasena);
     }
-    private void guardarSesion(long idCamarero, String nombreCompleto) {
+
+    /**
+     * Guarda los datos de la sesión y, si la opción está marcada, también las credenciales.
+     * @param recordarCredenciales Indica si las credenciales deben ser guardadas.
+     */
+    private void guardarSesion(long idCamarero, String nombreCompleto, String email, String contrasena, boolean recordarCredenciales) {
         SharedPreferences prefs = getSharedPreferences("SesionCamarero", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong("idCamarero", idCamarero);
-        editor.putString("nombreCamarero", nombreCompleto); // <-- guardamos nombre
+        editor.putString("nombreCamarero", nombreCompleto);
+
+        if (recordarCredenciales) { // Usamos el parámetro que ya tiene el estado del CheckBox
+            editor.putString("saved_email", email);
+            editor.putString("saved_password", contrasena);
+            editor.putBoolean("remember_me", true);
+        } else {
+            editor.remove("saved_email");
+            editor.remove("saved_password");
+            editor.putBoolean("remember_me", false);
+        }
         editor.apply();
+    }
+
+    /**
+     * Carga las preferencias al iniciar la Activity. Si \"Recuérdame\" estaba activo,
+     * rellena los campos de email y contraseña.
+     */
+    private void cargarPreferencias() {
+        SharedPreferences prefs = getSharedPreferences("SesionCamarero", MODE_PRIVATE);
+        boolean rememberMe = prefs.getBoolean("remember_me", false);
+
+        if (rememberMe) {
+            String email = prefs.getString("saved_email", "");
+            String password = prefs.getString("saved_password", "");
+            etEmail.setText(email);
+            etContrasena.setText(password);
+            if (cbRecuerdame != null) { // Comprobación defensiva antes de usar cbRecuerdame
+                cbRecuerdame.setChecked(true);
+            }
+        }
     }
 }

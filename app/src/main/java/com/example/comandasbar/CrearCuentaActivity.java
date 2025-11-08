@@ -32,6 +32,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import dao.CamareroDao;
 import database.AppDataBase;
 import database.CamareroEntity;
+import viewModel.CrearCuentaViewModel;
 
 public class CrearCuentaActivity extends AppCompatActivity {
 
@@ -44,12 +45,30 @@ public class CrearCuentaActivity extends AppCompatActivity {
     private ActivityResultLauncher<Uri> cameraLauncher;
     private Uri imagenUri; // Uri para la imagen capturada por la cámara
 
+    private CrearCuentaViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new CrearCuentaViewModel(getApplication());
+
+        //observador para msjs de error
+        viewModel.getError().observe(this, mensajeError -> {
+            Toast.makeText(this, mensajeError, Toast.LENGTH_SHORT).show();
+        });
+
+        //observador para cuenta creada con exito
+        viewModel.getCuentaCreada().observe(this, creada ->{
+            if(creada){
+                Toast.makeText(this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
+                finish();//cierra la actividad y vuelve al login
+            }
+        });
+
         setContentView(R.layout.activity_crear_cuenta);
 
-        // 1: INICIALIZAR TODAS LAS VISTAS
+        // 1: INICIALIZAR DE CAMPOS Y BOTONES
         nombreEditText = findViewById(R.id.ETnombre);
         emailEditText = findViewById(R.id.ETemail);
         contactoEditText = findViewById(R.id.ETcontacto);
@@ -122,55 +141,7 @@ public class CrearCuentaActivity extends AppCompatActivity {
         String contacto = contactoEditText.getText().toString().trim();
         String contrasena = contrasenaEditText.getText().toString();
 
-        // Realiza validaciones
-        if (nombre.isEmpty() || email.isEmpty() || contacto.isEmpty() || contrasena.isEmpty()) {
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (imagenUri == null) {
-            Toast.makeText(this, "Por favor, toma una foto de perfil", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Por favor, introduce un formato de email válido", Toast.LENGTH_SHORT).show();
-            emailEditText.setError("Formato de email inválido"); // Opcional: marca el campo con el error
-            return;
-        }
-        if (contacto.length() < 9 || contacto.length() > 11 ){
-            Toast.makeText(this, "El contacto debe tener entre 9 y 11 caracteres", Toast.LENGTH_SHORT).show();
-            contactoEditText.setError("Formato(codigo de area)(1234567)");
-            return;
-        }
-
-
-        // Procesa la imagen a byte[]
-        byte[] imagenEnBytes;
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(imagenUri);
-            imagenEnBytes = getBytes(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Hashea la contraseña
-        String hashConstrasena = BCrypt.withDefaults().hashToString(12, contrasena.toCharArray());
-
-        // Crea la entidad
-        CamareroEntity camarero = new CamareroEntity(email, hashConstrasena, nombre, contacto, imagenEnBytes);
-
-        // Guarda en la base de datos en un hilo de fondo
-        AppDataBase db = AppDataBase.getInstance(getApplicationContext());
-        CamareroDao camareroDao = db.camareroDao();
-
-        new Thread(() -> {
-            camareroDao.insert(camarero);
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
-                finish();
-            });
-        }).start();
+        viewModel.guardarDatosDelCamarero(nombre, email, contacto, contrasena, imagenUri);
     }
 
 
@@ -191,14 +162,4 @@ public class CrearCuentaActivity extends AppCompatActivity {
     }
 
 
-    private byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        int len;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
-    }
 }

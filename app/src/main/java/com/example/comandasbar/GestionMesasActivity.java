@@ -24,6 +24,7 @@ import java.util.Locale;
 import database.CamareroEntity;
 import database.MesaEntity;
 import database.PedidoEntity;
+import mapa.MapsActivity;
 import viewModel.GestionMesasViewModel;
 
 
@@ -35,6 +36,7 @@ public class GestionMesasActivity extends AppCompatActivity {
     private TextView txtNombreCamarero; // Muestra el nombre del camarero logueado
     private ImageView imgFotoCamarero; // Muestra la foto de perfil del camarero
     private Button btnCerrarSesion;
+    private Button btnCobro;
 
     // ID del camarero que ha iniciado sesión, recuperado de SharedPreferences
     private long idCamareroActual;
@@ -51,6 +53,7 @@ public class GestionMesasActivity extends AppCompatActivity {
         txtNombreCamarero = findViewById(R.id.txtNombreCamarero);
         imgFotoCamarero = findViewById(R.id.imgFotoCamarero);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
+        btnCobro=findViewById(R.id.btnCobro);
         gridMesas = findViewById(R.id.gridMesas);
         layoutPedidos = findViewById(R.id.layoutPedidos);
 
@@ -87,6 +90,14 @@ public class GestionMesasActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish(); // Cierra esta Activity para que el usuario no pueda volver con el botón "atrás"
+        });
+
+        btnCobro.setOnClickListener(v -> {
+
+            // Redirige a la pantalla de Ubicacion de cobro
+            Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
+
         });
     }
 

@@ -45,4 +45,5 @@
     <string name="recuerdame">Recuerdame</string>
     <string name="restar_cantidad_producto">Restar cantidad de producto</string>
     <string name="eliminar_producto">Eliminar producto</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

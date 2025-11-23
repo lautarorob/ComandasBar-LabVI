@@ -38,6 +38,8 @@ public class GestionMesasActivity extends AppCompatActivity {
     private Button btnCerrarSesion;
     private Button btnCobro;
 
+    private Button btnLocalizacion;
+
     // ID del camarero que ha iniciado sesión, recuperado de SharedPreferences
     private long idCamareroActual;
 
@@ -56,6 +58,8 @@ public class GestionMesasActivity extends AppCompatActivity {
         btnCobro=findViewById(R.id.btnCobro);
         gridMesas = findViewById(R.id.gridMesas);
         layoutPedidos = findViewById(R.id.layoutPedidos);
+        btnLocalizacion=findViewById(R.id.localizacion);
+
 
         // --- 2. Obtención del ViewModel ---
         // Se obtiene la instancia del ViewModel asociada a esta Activity.
@@ -96,6 +100,13 @@ public class GestionMesasActivity extends AppCompatActivity {
 
             // Redirige a la pantalla de Ubicacion de cobro
             Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
+
+        });
+        btnLocalizacion.setOnClickListener(v -> {
+
+            // Redirige a la pantalla de Ubicacion de cobro
+            Intent intent = new Intent(this, Localizacion.class);
             startActivity(intent);
 
         });

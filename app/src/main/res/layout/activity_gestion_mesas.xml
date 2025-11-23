@@ -39,6 +39,14 @@
         android:text="Ubicacion de cobro" />
 
     <Button
+        android:id="@+id/localizacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="Localizacion" />
+
+    <Button
         android:id="@+id/btnCerrarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

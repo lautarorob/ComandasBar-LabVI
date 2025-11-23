@@ -46,4 +46,23 @@
     <string name="restar_cantidad_producto">Restar cantidad de producto</string>
     <string name="eliminar_producto">Eliminar producto</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="android_image">Logo</string>
+    <string name="presione_el_boton_para_comenzar_la_localizacion">Presione el boton para comenzar la localizacion</string>
+    <string name="comenzar_seguimiento_de_localizacion">Comenzar Seguimiento de Localizacion</string>
+    <string name="logo">Logo</string>
+
+    <!-- Localizacion -->
+    <string name="location_permission_denied">Permiso de Localizacion denegada,
+        Por favor habilite los permisos para usar esta app.
+    </string>
+    <string name="address_text">"Direccion: %1$s \n Timestamp: %2$tr"</string>
+    <string name="no_location">Localizacion no disponible</string>
+    <string name="no_address_found">Direccion no encontrada</string>
+    <string name="loading">Cargando…</string>
+    <string name="service_not_available">Servicio no disponible</string>
+    <string name="invalid_lat_long_used">Coordenadas usadas invalidas</string>
+    <string name="start_tracking_location">Comenzar seguimiento de localizacion</string>
+    <string name="stop_tracking_location">Detener seguimiento de localizacion</string>
+    <string name="textview_hint">Presione el boton para comenzar la localizacion.
+    </string>
 </resources>

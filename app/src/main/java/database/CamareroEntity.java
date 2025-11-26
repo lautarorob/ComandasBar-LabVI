@@ -9,7 +9,7 @@ public class CamareroEntity {
     @PrimaryKey(autoGenerate = true)
     private long idCamarero;
     private String email;
-    private String contrasena; // NOTA: ¡Nunca almacenar en texto plano en una app real!
+    private String contrasena;
     private String nombreCompleto;
     private String contacto;
 

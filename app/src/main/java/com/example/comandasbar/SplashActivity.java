@@ -30,6 +30,6 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         startActivity(intent);
-        finish(); // 4. Cierra esta Activity para que el usuario no pueda volver a ella. ¡Es crucial!
+        finish();
     }
 }

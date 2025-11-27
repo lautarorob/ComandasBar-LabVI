@@ -55,8 +55,9 @@ public class CrearCuentaActivity extends AppCompatActivity {
 
         //observador para msjs de error
         viewModel.getError().observe(this, mensajeError -> {
-            Toast.makeText(this, mensajeError, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, mensajeError, Toast.LENGTH_LONG).show(); // <-- Aquí ya se usa LENGTH_LONG
         });
+
 
         //observador para cuenta creada con exito
         viewModel.getCuentaCreada().observe(this, creada ->{

@@ -21,7 +21,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ComandasBar">
+        android:theme="@style/Theme.ComandasBar"
+        android:usesCleartextTraffic="true"  tools:targetApi="31">
         <activity
             android:name=".Localizacion"
             android:exported="false" />

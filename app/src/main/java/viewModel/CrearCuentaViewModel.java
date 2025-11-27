@@ -21,12 +21,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern; // Importación necesaria para Pattern
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import okhttp3.ResponseBody; // Importar ResponseBody
+import okhttp3.ResponseBody;
+import com.google.gson.Gson; // NUEVO: Importar Gson
+import com.google.gson.JsonSyntaxException; // NUEVO: Importar JsonSyntaxException
 
 public class CrearCuentaViewModel extends AndroidViewModel {
 
@@ -77,7 +79,7 @@ public class CrearCuentaViewModel extends AndroidViewModel {
         Pattern passwordPattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$");
         Matcher passwordMatcher = passwordPattern.matcher(contrasena);
         if (!passwordMatcher.matches()) {
-            error.setValue("La contraseña debe tener al menos una letra, un número y un Carác.Esp.");
+            error.setValue("La contraseña debe tener al menos una letra, un número y un Carác.Esp");
             return;
         }
 
@@ -145,15 +147,36 @@ public class CrearCuentaViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    // Si no es exitoso (400, 404, 500, etc.)
                     try {
-                        String successBody = response.body().string();
-                        Log.d("API_SUCCESS_REAL", "Código: " + response.code() + " Cuerpo: " + successBody);
-                        if (successBody.contains("Usuario registrado exitosamente")) { // Puedes verificar el mensaje
-                            cuentaCreada.postValue(true);
+                        String responseBodyString = response.body().string();
+                        String contentType = response.headers().get("Content-Type");
+                        
+                        // Intentar leer como JSON si el Content-Type lo indica
+                        if (contentType != null && contentType.contains("application/json")) {
+                            Gson gson = new Gson();
+                            try {
+                                RegisterResponse registerResponse = gson.fromJson(responseBodyString, RegisterResponse.class);
+                                if (registerResponse != null && registerResponse.getMessage() != null && registerResponse.getMessage().contains("Usuario registrado exitosamente")) {
+                                    cuentaCreada.postValue(true);
+                                } else {
+                                    error.postValue("Registro exitoso, pero JSON de respuesta inesperado.");
+                                }
+                            } catch (JsonSyntaxException e) {
+                                // Falló al parsear como JSON, intentar como texto plano
+                                Log.e("API_PARSE_ERROR", "Fallo al parsear JSON, intentando como texto plano.", e);
+                                if (responseBodyString.contains("Usuario registrado exitosamente")) {
+                                    cuentaCreada.postValue(true);
+                                } else {
+                                    error.postValue("Registro exitoso, pero respuesta de texto inesperada: " + responseBodyString);
+                                }
+                            }
                         } else {
-                            // Si el éxito no es el mensaje esperado, aunque el código sea 201
-                            error.postValue("Registro exitoso, pero respuesta inesperada: " + successBody);
+                            // No es JSON (es texto plano), leer como texto
+                            if (responseBodyString.contains("Usuario registrado exitosamente")) {
+                                cuentaCreada.postValue(true);
+                            } else {
+                                error.postValue("Registro exitoso, pero respuesta de texto inesperada: " + responseBodyString);
+                            }
                         }
 
                     } catch (IOException e) {
@@ -165,10 +188,13 @@ public class CrearCuentaViewModel extends AndroidViewModel {
                     try {
                         String errorBody = response.errorBody().string();
                         Log.e("API_ERROR_REAL", "Código: " + response.code() + " Cuerpo: " + errorBody);
-                        // Se lo mostramos al usuario (o al menos una parte)
+                        // Se lo mostramos al usuario (una parte)
                         if (response.code() == 400) {
                             if (errorBody.contains("Email en uso")) {
                                 error.postValue("Error: El email ya está registrado.");
+                            }
+                            else if (errorBody.contains("invalid credentials")) { // ejemplo de otro error 400 que podría enviar el servidor
+                                error.postValue("Error 400: Credenciales inválidas.");
                             } else {
                                 error.postValue("Error 400: Datos de registro inválidos.");
                             }

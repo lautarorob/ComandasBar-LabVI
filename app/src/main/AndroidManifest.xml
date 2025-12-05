@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ESTA ES LA LÍNEA MÁGICA QUE TE FALTA: -->
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />

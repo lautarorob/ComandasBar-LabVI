@@ -12,15 +12,26 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.util.List;
 import java.util.Locale;
+import android.util.Log;
 import viewModel.PedidoViewModel;
 
 public class ComandaFragment extends Fragment {
 
     private PedidoViewModel pedidoViewModel;
-    private LinearLayout layoutItems;
+
+    // Contenedores para las 3 categorías
+    private LinearLayout containerEntradas;
+    private LinearLayout containerPrincipales;
+    private LinearLayout containerBebidas;
+
+    // Títulos de las categorías (Para ocultarlos si no hay items)
+    private TextView lblEntradas;
+    private TextView lblPrincipales;
+    private TextView lblBebidas;
+
     private TextView txtTotal;
+    private TextView txtTituloMesa;
     private Button btnCobrar;
 
     @Nullable
@@ -33,47 +44,91 @@ public class ComandaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        layoutItems = view.findViewById(R.id.layout_items_comanda);
+        // 1. Inicializar Vistas
+        containerEntradas = view.findViewById(R.id.container_entradas);
+        containerPrincipales = view.findViewById(R.id.container_principales);
+        containerBebidas = view.findViewById(R.id.container_bebidas);
+
+        // Inicializamos los títulos (Asegúrate de ponerles estos IDs en el XML)
+        lblEntradas = view.findViewById(R.id.lbl_entradas);
+        lblPrincipales = view.findViewById(R.id.lbl_principales);
+        lblBebidas = view.findViewById(R.id.lbl_bebidas);
+
         txtTotal = view.findViewById(R.id.txt_total_comanda);
+        txtTituloMesa = view.findViewById(R.id.txt_titulo_mesa);
         btnCobrar = view.findViewById(R.id.btn_cerrar_y_cobrar);
 
+        // 2. Obtener número de mesa de la Activity padre
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            int numMesa = getActivity().getIntent().getIntExtra("numeroMesa", 0);
+            txtTituloMesa.setText("COMANDA MESA " + numMesa);
+        }
+
+        // 3. Conectar ViewModel
         pedidoViewModel = new ViewModelProvider(requireActivity()).get(PedidoViewModel.class);
 
+        // 4. Observar cambios en la comanda
         pedidoViewModel.getComanda().observe(getViewLifecycleOwner(), comanda -> {
-            layoutItems.removeAllViews();
+
+            // Limpiar contenedores antes de redibujar
+            containerEntradas.removeAllViews();
+            containerPrincipales.removeAllViews();
+            containerBebidas.removeAllViews();
+
             double total = 0;
 
             if (comanda != null) {
                 for (PedidoItem item : comanda) {
-                    // --- Inflar el nuevo layout para cada item de la comanda ---
-                    View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_comanda_producto, layoutItems, false);
 
+                    // Inflar la vista del item
+                    View itemView = LayoutInflater.from(getContext())
+                            .inflate(R.layout.item_comanda_producto, null, false);
+
+                    // Conectar elementos del item
+                    TextView txtNombre = itemView.findViewById(R.id.txt_item_nombre);
                     TextView txtCantidad = itemView.findViewById(R.id.txt_item_cantidad);
-                    TextView txtNombreSubtotal = itemView.findViewById(R.id.txt_item_nombre_subtotal);
+                    TextView txtSubtotal = itemView.findViewById(R.id.txt_item_subtotal);
+
                     ImageButton btnRestar = itemView.findViewById(R.id.btn_restar_producto);
+                    ImageButton btnSumar = itemView.findViewById(R.id.btn_sumar_producto);
                     ImageButton btnEliminar = itemView.findViewById(R.id.btn_eliminar_producto);
 
-                    // --- Rellenar los datos del item ---
-                    txtCantidad.setText(String.format(Locale.getDefault(), "%dx", item.getCantidad()));
-                    txtNombreSubtotal.setText(String.format(Locale.getDefault(), "%s - $%.2f",
-                            item.getProducto().getNombre(), item.getSubtotal()));
+                    // Poner datos
+                    String productName = item.getProducto().getNombre();
+                    Log.d("ComandaFragment", "Product Name: " + productName);
+                    txtNombre.setText(productName);
+                    txtCantidad.setText(String.valueOf(item.getCantidad()));
+                    txtSubtotal.setText(String.format(Locale.getDefault(), "$%.2f", item.getSubtotal()));
 
-                    // --- Configurar Listeners para los botones de ajustar cantidad ---
-                    // Pasamos el objeto Producto del PedidoItem para que el ViewModel sepa qué ajustar.
-                    btnRestar.setOnClickListener(v -> {
-                        pedidoViewModel.restarProducto(item.getProducto());
-                    });
+                    // --- FUNCIONALIDAD BOTONES ---
+                    btnRestar.setOnClickListener(v -> pedidoViewModel.restarProducto(item.getProducto()));
+                    btnSumar.setOnClickListener(v -> pedidoViewModel.agregarProducto(item.getProducto()));
+                    btnEliminar.setOnClickListener(v -> pedidoViewModel.eliminarProducto(item.getProducto()));
 
-                    btnEliminar.setOnClickListener(v -> {
-                        pedidoViewModel.eliminarProducto(item.getProducto());
-                    });
+                    // --- CLASIFICACIÓN ---
+                    String categoria = item.getProducto().getCategoria();
 
-                    layoutItems.addView(itemView);
+                    if ("Entradas".equalsIgnoreCase(categoria)) {
+                        containerEntradas.addView(itemView);
+                    } else if ("Principales".equalsIgnoreCase(categoria)) {
+                        containerPrincipales.addView(itemView);
+                    } else if ("Bebidas".equalsIgnoreCase(categoria)) {
+                        containerBebidas.addView(itemView);
+                    } else {
+                        containerPrincipales.addView(itemView);
+                    }
+
                     total += item.getSubtotal();
                 }
             }
 
-            txtTotal.setText(String.format(Locale.getDefault(), "Total: $%.2f", total));
+            // --- ACTUALIZAR VISIBILIDAD DE SECCIONES ---
+            // Ocultamos o mostramos la sección completa (Título + Tarjeta) según si tiene items
+            actualizarVisibilidadSeccion(containerEntradas, lblEntradas);
+            actualizarVisibilidadSeccion(containerPrincipales, lblPrincipales);
+            actualizarVisibilidadSeccion(containerBebidas, lblBebidas);
+
+            txtTotal.setText(String.format(Locale.getDefault(), "$%.2f", total));
         });
 
         btnCobrar.setOnClickListener(v -> {
@@ -81,5 +136,24 @@ public class ComandaFragment extends Fragment {
                 ((PedidoActivity) getActivity()).iniciarCobro();
             }
         });
+    }
+
+    /**
+     * Muestra u oculta la sección completa (Título y CardView) dependiendo de si hay items.
+     * Busca el CardView padre subiendo en la jerarquía de vistas.
+     */
+    private void actualizarVisibilidadSeccion(LinearLayout container, TextView label) {
+        // Obtenemos el CardView que envuelve al container (su padre inmediato)
+        View cardPadre = (View) container.getParent();
+
+        if (container.getChildCount() > 0) {
+            // Si hay productos: MOSTRAR TODO
+            if (label != null) label.setVisibility(View.VISIBLE);
+            if (cardPadre != null) cardPadre.setVisibility(View.VISIBLE);
+        } else {
+            // Si NO hay productos: OCULTAR TODO
+            if (label != null) label.setVisibility(View.GONE);
+            if (cardPadre != null) cardPadre.setVisibility(View.GONE);
+        }
     }
 }

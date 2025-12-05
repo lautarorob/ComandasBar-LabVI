@@ -1,53 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:paddingStart="12dp"
-    android:paddingEnd="8dp">
-
-    <TextView
-        android:id="@+id/txt_item_cantidad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="1x" android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txt_item_nombre_subtotal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Nombre Producto - $0.00" android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        android:maxLines="1"
-        android:ellipsize="end" />
-
+    android:padding="8dp">
+    
+    <!-- Nombre y Subtotal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:layout_marginTop="4dp">
+        android:orientation="vertical"
+        android:layout_marginBottom="4dp">
 
-        <ImageButton
-            android:id="@+id/btn_restar_producto"
+        <TextView
+            android:id="@+id/txt_item_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Plato"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/txt_item_subtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" android:contentDescription="@string/restar_cantidad_producto"
-            android:minHeight="48dp"
-            android:layout_marginEnd="16dp"/>
-
-        <ImageButton
-            android:id="@+id/btn_eliminar_producto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_delete" android:contentDescription="@string/eliminar_producto"
-            android:minHeight="48dp" />
+            android:text="$1500.00"
+            android:textColor="#4CAF50"
+            android:textSize="12sp"/>
     </LinearLayout>
 
+    <!-- Controles (+ - Borrar) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Botón Menos -->
+        <ImageButton
+            android:id="@+id/btn_restar_producto"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_input_delete"
+            app:tint="#F44336" />
+
+        <!-- Cantidad en el medio -->
+        <TextView
+            android:id="@+id/txt_item_cantidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginHorizontal="4dp"/>
+
+        <!-- Botón Más -->
+        <ImageButton
+            android:id="@+id/btn_sumar_producto"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_input_add"
+            app:tint="#4CAF50" />
+
+        <!-- Botón Eliminar (Basura) -->
+        <ImageButton
+            android:id="@+id/btn_eliminar_producto"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="#757575" />
+
+    </LinearLayout>
 </LinearLayout>

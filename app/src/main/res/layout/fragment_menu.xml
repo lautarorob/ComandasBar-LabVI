@@ -1,64 +1,60 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp">
+    android:orientation="vertical"
+    android:background="#F5F5F5">
 
+    <!-- Botón de volver atrás (Opcional, según tu diseño original) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/white">
 
         <ImageButton
             android:id="@+id/arrowBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/design_default_color_background"
-            android:contentDescription="@string/boton_atras"
-            android:minHeight="48dp"
-            android:layout_marginTop="30dp"
-            app:srcCompat="@drawable/arrow_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Volver" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/entradas"
+            android:text="Menú"
             android:textSize="20sp"
-            android:layout_marginTop="40dp"
-            android:textStyle="bold"/>
-        <LinearLayout
-            android:id="@+id/layout_entradas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/platos_principales"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-        <LinearLayout
-            android:id="@+id/layout_principales"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bebidas"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-        <LinearLayout
-            android:id="@+id/layout_bebidas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
-</ScrollView>
+
+    <!-- BARRA DE NAVEGACIÓN (TABS) -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:tabIndicatorColor="#FF5722"
+        app:tabSelectedTextColor="#FF5722"
+        app:tabTextColor="#757575"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
+
+    <!-- LISTA DE PLATOS (Aquí se cargan las fotos) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
+
+
+
+
+

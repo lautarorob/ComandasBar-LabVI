@@ -6,11 +6,14 @@ public class Producto implements Serializable {
     private String nombre;
     private double precio;
     private String categoria; // "Entradas", "Bebidas", etc.
+    private String urlImagen; // <--- NUEVO CAMPO
 
-    public Producto(String nombre, double precio, String categoria) {
+    // Actualizamos el constructor
+    public Producto(String nombre, double precio, String categoria, String urlImagen) {
         this.nombre = nombre;
         this.precio = precio;
         this.categoria = categoria;
+        this.urlImagen = urlImagen;
     }
 
     // --- Getters ---
@@ -25,4 +28,5 @@ public class Producto implements Serializable {
     public String getCategoria() {
         return categoria;
     }
+    public String getUrlImagen() { return urlImagen; } // <--- NUEVO GETTER
 }
